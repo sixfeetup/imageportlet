@@ -9,11 +9,6 @@
 <object name="portal_javascripts">
 
     <javascript
-        id="++resource++imageportlet/jquery.cycle.lite.js"
-        cacheable="True" compression="safe" cookable="True"
-        enabled="True" expression=""  inline="False" />
-
-    <javascript
         id="++resource++imageportlet/main.js"
         cacheable="True" compression="safe" cookable="True"
         enabled="True" expression=""  inline="False" />

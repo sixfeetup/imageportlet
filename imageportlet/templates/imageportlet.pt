@@ -4,30 +4,25 @@
 
         <div class="outer-wrapper"
              tal:attributes="style view/getWrapperStyle">
+             
+             <tal:image repeat="imageDesc view/imageData">
 
-            <div tal:attributes="class view/getCarouselCSSClass">
+                 <div class="default"
+                      tal:condition="repeat/imageDesc/start"
+                      tal:attributes="style python:view.getStyle(imageDesc)">
+                     &nbsp;
+                 </div>
 
-                <tal:image repeat="imageDesc view/imageData">
+                 <a class="hover"
+                    tal:condition="repeat/imageDesc/end"
+                    tal:attributes="style python:view.getStyle(imageDesc);
+                                    href view/data/link">
+                         <div class="text"
+                              tal:condition="view/getOnImageText"
+                              tal:content="structure view/getOnImageText" />
+                 </a>
 
-                    <div class="image-wrapper"
-                         tal:condition="not:view/data/link"
-                         tal:attributes="style python:view.getStyle(imageDesc)">
-                        <div class="text"
-                             tal:condition="view/getOnImageText"
-                             tal:content="structure view/getOnImageText" />
-                    </div>
-
-                    <a class="image-wrapper"
-                       tal:condition="view/data/link"
-                       tal:attributes="style python:view.getStyle(imageDesc);
-                                       href view/data/link">
-                            <div class="text"
-                                 tal:condition="view/getOnImageText"
-                                 tal:content="structure view/getOnImageText" />
-                    </a>
-
-                </tal:image>
-            </div>
+             </tal:image>
         </div>
 
 

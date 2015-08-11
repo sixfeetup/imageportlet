@@ -12,17 +12,15 @@
 
  /*global window,document*/
 
-(function($) {
-
-    "use strict";
-
-    function rotateBanners() {
-        $(".image-portlet-carousel").cycle({timeout:5500});
-    }
-
-    $(document).ready(function() {
-        rotateBanners();
-    });
-
-})(jQuery);
-
+(function($) { $(function() {
+    $(".imagePortlet").hover(
+        function() {
+            console.log("hover");
+            $(this).find(".default").fadeOut();
+            $(this).find(".hover").fadeIn();
+        }, function() {
+            $(this).find(".hover").fadeOut();
+            $(this).find(".default").fadeIn();
+        }
+    );
+}); })(jQuery);

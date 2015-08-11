@@ -1,8 +1,3 @@
-/* http://www.vanseodesign.com/css/vertical-centering/ CSS Table Method explained */
-.imagePortlet .image-wrapper {
-    display: table;
-}
-
 
 /* Try to override Plone's default link border styles hard for image links */
 .imagePortlet .outer-wrapper,
@@ -17,22 +12,22 @@
     border-bottom: 0 !important;
 }
 
+.imagePortlet .outer-wrapper {
+    position: relative;
+}
 /* Text-over-image using relative + absolute positioning trick */
 .imagePortlet .text {
-    text-align: center;
-    vertical-align: middle;
-    display: table-cell;
+    background-color: rgba(49, 74, 178, 0.65);
+    color: #ffffff;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 10px;
 }
-
-/* Hack IE7 support */
-.image-portlet-carousel a,
-.image-portlet-no-carousel a {
-    *display: block;
-}
-
-/* IE7 fails */
-.image-portlet-text {
-    *display: none;
+.imagePortlet .hover {
+    display: none;
+    position: absolute;
+    top: 0;
 }
 .hidden-portlet {
     display: none;
