@@ -1,3 +1,4 @@
+import logging
 import urllib
 from random import shuffle
 
@@ -9,13 +10,18 @@ from zope.interface import implements
 from zope.component import getMultiAdapter
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
+from Acquisition import aq_inner
+from Products.CMFCore.utils import getToolByName
 from plone.directives import form
+from plone.app.form.widgets.wysiwygwidget import WYSIWYGWidget
 from plone.app.portlets.portlets import base
 
 from plone.namedfile.field import NamedImage
 from plone.namedfile.interfaces import IImageScaleTraversable
 
 import z3cformhelper  # XXX: Import from plone.app.portlets since Plone 4.3
+
+logger = logging.getLogger('imageportlet.portlets')
 
 
 def _(x):
@@ -34,43 +40,43 @@ class IImagePortlet(form.Schema):
             required=False,
         )
 
-    link = schema.TextLine(title=_(u"Link"),
-                           description=_(u"Absolute or site root relative link target"),
-                           required=False,
-                           default=None)
-
     image2 = NamedImage(
             title=_(u"Image #2"),
             description=_(u"Several images will be shown as a carousel"),
             required=False,
             default=None)
 
-    link2 = schema.TextLine(title=_(u"Link #2"),
-                           description=_(u"Absolute or site root relative link target for image #2"),
-                           required=False,
-                            default=None)
-
-    image3 = NamedImage(
-            title=_(u"Image #3"),
-            description=_(u"Several images will be shown as a carousel"),
-            required=False,
-            default=None)
-
-    link3 = schema.TextLine(title=_(u"Link #3"),
-                           description=_(u"Absolute or site root relative link target for image #2"),
+    link = schema.TextLine(title=_(u"Link"),
+                           description=_(u"Absolute or site root relative link target"),
                            required=False,
                            default=None)
 
-    image4 = NamedImage(
-            title=_(u"Image #4"),
-            description=_(u"Several images will be shown as a carousel"),
-            required=False,
-            default=None)
-
-    link4 = schema.TextLine(title=_(u"Link #4"),
-                           description=_(u"Absolute or site root relative link target for image #2"),
-                           required=False,
-                           default=None)
+    # link2 = schema.TextLine(title=_(u"Link #2"),
+    #                        description=_(u"Absolute or site root relative link target for image #2"),
+    #                        required=False,
+    #                         default=None)
+    # 
+    # image3 = NamedImage(
+    #         title=_(u"Image #3"),
+    #         description=_(u"Several images will be shown as a carousel"),
+    #         required=False,
+    #         default=None)
+    # 
+    # link3 = schema.TextLine(title=_(u"Link #3"),
+    #                        description=_(u"Absolute or site root relative link target for image #2"),
+    #                        required=False,
+    #                        default=None)
+    # 
+    # image4 = NamedImage(
+    #         title=_(u"Image #4"),
+    #         description=_(u"Several images will be shown as a carousel"),
+    #         required=False,
+    #         default=None)
+    # 
+    # link4 = schema.TextLine(title=_(u"Link #4"),
+    #                        description=_(u"Absolute or site root relative link target for image #2"),
+    #                        required=False,
+    #                        default=None)
 
     # XXX: Have site specific configurable vocabulary for portlets here
     #imageSize = schema.Choice(title=_(u"Image size"),
@@ -82,17 +88,17 @@ class IImagePortlet(form.Schema):
                            required=False,
                            default=u"")
 
-    text = schema.TextLine(title=_(u"On image text"),
-                                description=_(u"Text over the image for buttonish images"),
-                                required=False,
-                                default=u"")
+    text = schema.Text(title=_(u"On image text"),
+                       description=_(u"Text over the image for buttonish images"),
+                       required=False,
+                       default=u"")
 
     #drawText = schema.Bool(title=_(u"Is the text visible on the image"), default=True)
 
-    footerText = schema.TextLine(title=_(u"Footer"),
-                           description=_(u"Text below the portlet"),
-                           required=False,
-                           default=u"")
+    # footerText = schema.TextLine(title=_(u"Footer"),
+    #                        description=_(u"Text below the portlet"),
+    #                        required=False,
+    #                        default=u"")
 
     altText = schema.TextLine(title=_(u"ALT text"),
                            description=_(u"A placeholder text for web browsers which cannot display images. This text is only needed if the portlet has only the image and no other texts."),
@@ -112,20 +118,20 @@ class Assignment(base.Assignment):
     # Make sure default values work correctly migration proof manner
     text = FieldProperty(IImagePortlet["text"])
     headingText = FieldProperty(IImagePortlet["headingText"])
-    footerText = FieldProperty(IImagePortlet["footerText"])
+    # footerText = FieldProperty(IImagePortlet["footerText"])
     altText = FieldProperty(IImagePortlet["altText"])
 
     image = FieldProperty(IImagePortlet["image"])
+    image2 = FieldProperty(IImagePortlet["image2"])
     link = FieldProperty(IImagePortlet["link"])
 
-    image2 = FieldProperty(IImagePortlet["image2"])
-    link2 = FieldProperty(IImagePortlet["link2"])
-
-    image3 = FieldProperty(IImagePortlet["image3"])
-    link3 = FieldProperty(IImagePortlet["link3"])
-
-    image4 = FieldProperty(IImagePortlet["image4"])
-    link4 = FieldProperty(IImagePortlet["link4"])
+    # link2 = FieldProperty(IImagePortlet["link2"])
+    # 
+    # image3 = FieldProperty(IImagePortlet["image3"])
+    # link3 = FieldProperty(IImagePortlet["link3"])
+    # 
+    # image4 = FieldProperty(IImagePortlet["image4"])
+    # link4 = FieldProperty(IImagePortlet["link4"])
 
     def __init__(self, **kwargs):
         self.__dict__.update(**kwargs)
@@ -143,7 +149,7 @@ class Assignment(base.Assignment):
         """
         Be smart as what show as the management interface title.
         """
-        entries = [self.text, self.altText, self.headingText, self.footerText, u"Image portlet"]
+        entries = [self.text, self.altText, self.headingText, u"Image portlet"]
         for e in entries:
             if e:
                 return e
@@ -170,16 +176,16 @@ class Renderer(base.Renderer):
 
         # getattr -> migration safe
         if getattr(self.data, "image2", None):
-            data.append(dict(image=self.data.image2, link=self.data.link2, id="image2"))
+            data.append(dict(image=self.data.image2, id="image2"))
 
-        if getattr(self.data, "image3", None):
-            data.append(dict(image=self.data.image3, link=self.data.link3, id="image3"))
-
-        if getattr(self.data, "image4", None):
-            data.append(dict(image=self.data.image4, link=self.data.link4, id="image4"))
+        # if getattr(self.data, "image3", None):
+        #     data.append(dict(image=self.data.image3, link=self.data.link3, id="image3"))
+        # 
+        # if getattr(self.data, "image4", None):
+        #     data.append(dict(image=self.data.image4, link=self.data.link4, id="image4"))
 
         # Randomize the display order
-        shuffle(data)
+        # shuffle(data)
 
         return data
 
@@ -321,11 +327,38 @@ class Renderer(base.Renderer):
             max_height = max(size[1], max_height)
 
         return "width: %dpx; height: %dpx" % (max_width, max_height)
+        
+    def transformed(self, mt='text/x-html-safe'):
+        """Use the safe_html transform to protect text output. This also
+        ensures that resolve UID links are transformed into real links.
+        """
+        orig = self.data.text
+        context = aq_inner(self.context)
+        if not isinstance(orig, unicode):
+            # Apply a potentially lossy transformation, and hope we stored
+            # utf-8 text. There were bugs in earlier versions of this portlet
+            # which stored text directly as sent by the browser, which could
+            # be any encoding in the world.
+            orig = unicode(orig, 'utf-8', 'ignore')
+            logger.warn("Static portlet at %s has stored non-unicode text. "
+                        "Assuming utf-8 encoding." % context.absolute_url())
+
+        # Portal transforms needs encoded strings
+        orig = orig.encode('utf-8')
+
+        transformer = getToolByName(context, 'portal_transforms')
+        data = transformer.convertTo(mt, orig,
+                                     context=context, mimetype='text/html')
+        result = data.getData()
+        if result:
+            return unicode(result, 'utf-8')
+        return None
 
 
 class AddForm(z3cformhelper.AddForm):
 
     fields = field.Fields(IImagePortlet)
+    fields['text'].custom_widget = WYSIWYGWidget
 
     def create(self, data):
         return Assignment(**data)
@@ -334,3 +367,4 @@ class AddForm(z3cformhelper.AddForm):
 class EditForm(z3cformhelper.EditForm):
 
     fields = field.Fields(IImagePortlet)
+    fields['text'].custom_widget = WYSIWYGWidget
