@@ -7,11 +7,15 @@
              
              <tal:image repeat="imageDesc view/imageData">
 
-                 <div class="default"
-                      tal:condition="repeat/imageDesc/start"
-                      tal:attributes="style python:view.getStyle(imageDesc)">
-                     &nbsp;
-                 </div>
+                 <a href=""
+                    tal:attributes="href view/data/link;
+                                    title view/getOnImageText|nothing">
+                     <div class="default"
+                          tal:condition="repeat/imageDesc/start"
+                          tal:attributes="style python:view.getStyle(imageDesc)">
+                         &nbsp;
+                     </div>
+                </a>
 
                  <a class="hover"
                     tal:condition="repeat/imageDesc/end"
