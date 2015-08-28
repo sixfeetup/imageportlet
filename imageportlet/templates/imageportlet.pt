@@ -2,19 +2,17 @@
 
     <dd>
 
-        <div class="outer-wrapper"
-             tal:attributes="style view/getWrapperStyle">
+        <div class="outer-wrapper">
              
              <tal:image repeat="imageDesc view/imageData">
 
                  <a href=""
+                    tal:condition="repeat/imageDesc/start"
                     tal:attributes="href view/data/link;
                                     title view/getOnImageText|nothing">
-                     <div class="default"
-                          tal:condition="repeat/imageDesc/start"
-                          tal:attributes="style python:view.getStyle(imageDesc)">
-                         &nbsp;
-                     </div>
+                     <img src="" alt=""
+                          tal:attributes="src python:view.getImageURL(imageDesc);
+                                          alt view/getOnImageText" />
                 </a>
 
                  <a class="hover"
