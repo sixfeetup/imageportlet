@@ -15,7 +15,6 @@
 (function($) { $(function() {
     $(".imagePortlet").hover(
         function() {
-            console.log("hover");
             $(this).find(".default").fadeOut();
             $(this).find(".hover").fadeIn();
         }, function() {

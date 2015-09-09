@@ -6,7 +6,7 @@
              
              <tal:image repeat="imageDesc view/imageData">
 
-                 <a href=""
+                 <a href="" class="default"
                     tal:condition="repeat/imageDesc/start"
                     tal:attributes="href view/data/link;
                                     title view/getOnImageText|nothing">

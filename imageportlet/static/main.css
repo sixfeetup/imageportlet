@@ -24,10 +24,14 @@
     box-sizing: border-box;
     padding: 10px;
 }
+.imagePortlet .default {
+    position: absolute;
+}
 .imagePortlet .hover {
     display: none;
     position: absolute;
     top: 0;
+    z-index: 2;
 }
 .hidden-portlet {
     display: none;
