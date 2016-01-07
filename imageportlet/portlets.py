@@ -12,8 +12,8 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 from Acquisition import aq_inner
 from Products.CMFCore.utils import getToolByName
-from plone.directives import form
 from plone.app.form.widgets.wysiwygwidget import WYSIWYGWidget
+from plone.portlets.interfaces import IPortletDataProvider
 from plone.app.portlets.portlets import base
 
 from plone.namedfile.field import NamedImage
@@ -29,7 +29,7 @@ def _(x):
     return x
 
 
-class IImagePortlet(form.Schema):
+class IImagePortlet(IPortletDataProvider):
     """
     Define image portlet fields.
     """
