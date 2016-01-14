@@ -16,11 +16,15 @@
     position: relative;
 }
 /* Text-over-image using relative + absolute positioning trick */
-.imagePortlet .text {
+.imagePortlet .text-wrapper {
     background-color: rgba(49, 74, 178, 0.65);
-    color: #ffffff;
     width: 100%;
     height: 100%;
+}
+
+.imagePortlet .text {
+    color: #ffffff;
+    width: 100%;
     box-sizing: border-box;
     padding: 10px;
 }

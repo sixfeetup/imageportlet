@@ -19,9 +19,11 @@
                     tal:condition="repeat/imageDesc/end"
                     tal:attributes="style python:view.getStyle(imageDesc);
                                     href view/data/link">
+                    <div class="text-wrapper"
+                         tal:condition="view/getOnImageText">
                          <div class="text"
-                              tal:condition="view/getOnImageText"
                               tal:content="structure view/getOnImageText" />
+                    </div>
                  </a>
 
              </tal:image>
