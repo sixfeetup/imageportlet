@@ -83,7 +83,7 @@ class IImagePortlet(IPortletDataProvider):
     #                         description=_(u"Leave empty to use the orignal size"),
     #                         source=thumbnail_sizes_vocabulary, required=False)
 
-    headingText = schema.TextLine(title=_(u"Heading"),
+    headingText = schema.Text(title=_(u"Heading"),
                            description=_(u"Text above the portlet"),
                            required=False,
                            default=u"")
@@ -225,6 +225,11 @@ class Renderer(base.Renderer):
 
         return None
 
+    def getHeadingText(self):
+        """
+        """
+        return self.data.headingText
+
     def getOnImageText(self):
         """
         """
@@ -358,6 +363,7 @@ class Renderer(base.Renderer):
 class AddForm(z3cformhelper.AddForm):
 
     fields = field.Fields(IImagePortlet)
+    fields['headingText'].custom_widget = WYSIWYGWidget
     fields['text'].custom_widget = WYSIWYGWidget
 
     def create(self, data):
@@ -367,4 +373,5 @@ class AddForm(z3cformhelper.AddForm):
 class EditForm(z3cformhelper.EditForm):
 
     fields = field.Fields(IImagePortlet)
+    fields['headingText'].custom_widget = WYSIWYGWidget
     fields['text'].custom_widget = WYSIWYGWidget

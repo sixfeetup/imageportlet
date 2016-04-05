@@ -8,11 +8,15 @@
 
                  <a href="" class="default"
                     tal:condition="repeat/imageDesc/start"
-                    tal:attributes="href view/data/link;
-                                    title view/getOnImageText|nothing">
+                    tal:attributes="href view/data/link;">
                      <img src="" alt=""
                           tal:attributes="src python:view.getImageURL(imageDesc);
                                           alt view/getOnImageText" />
+                     <div class="text-wrapper"
+                         tal:condition="view/getHeadingText">
+                         <div class="text"
+                              tal:content="structure view/getHeadingText" />
+                    </div>
                 </a>
 
                  <a class="hover"
