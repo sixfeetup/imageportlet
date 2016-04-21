@@ -35,75 +35,31 @@ class IImagePortlet(IPortletDataProvider):
     """
 
     image = NamedImage(
-            title=_(u"Image"),
-            description=_(u"Please upload an image"),
+            title=_(u"Default Image"),
+            description=_(u"Default image displayed in the portlet"),
             required=False,
         )
 
+    headingText = schema.Text(title=_(u"Heading"),
+                           description=_(u"Text on top of the default image"),
+                           required=False,
+                           default=u"")
+
     image2 = NamedImage(
-            title=_(u"Image #2"),
-            description=_(u"Several images will be shown as a carousel"),
+            title=_(u"Rollover Image"),
+            description=_(u"Image displayed when hovering over the portlet"),
             required=False,
             default=None)
+
+    text = schema.Text(title=_(u"Rollover text"),
+                       description=_(u"Text displayed when hovering over the portlet"),
+                       required=False,
+                       default=u"")
 
     link = schema.TextLine(title=_(u"Link"),
                            description=_(u"Absolute or site root relative link target"),
                            required=False,
                            default=None)
-
-    # link2 = schema.TextLine(title=_(u"Link #2"),
-    #                        description=_(u"Absolute or site root relative link target for image #2"),
-    #                        required=False,
-    #                         default=None)
-    # 
-    # image3 = NamedImage(
-    #         title=_(u"Image #3"),
-    #         description=_(u"Several images will be shown as a carousel"),
-    #         required=False,
-    #         default=None)
-    # 
-    # link3 = schema.TextLine(title=_(u"Link #3"),
-    #                        description=_(u"Absolute or site root relative link target for image #2"),
-    #                        required=False,
-    #                        default=None)
-    # 
-    # image4 = NamedImage(
-    #         title=_(u"Image #4"),
-    #         description=_(u"Several images will be shown as a carousel"),
-    #         required=False,
-    #         default=None)
-    # 
-    # link4 = schema.TextLine(title=_(u"Link #4"),
-    #                        description=_(u"Absolute or site root relative link target for image #2"),
-    #                        required=False,
-    #                        default=None)
-
-    # XXX: Have site specific configurable vocabulary for portlets here
-    #imageSize = schema.Choice(title=_(u"Image size"),
-    #                         description=_(u"Leave empty to use the orignal size"),
-    #                         source=thumbnail_sizes_vocabulary, required=False)
-
-    headingText = schema.Text(title=_(u"Heading"),
-                           description=_(u"Text above the portlet"),
-                           required=False,
-                           default=u"")
-
-    text = schema.Text(title=_(u"On image text"),
-                       description=_(u"Text over the image for buttonish images"),
-                       required=False,
-                       default=u"")
-
-    #drawText = schema.Bool(title=_(u"Is the text visible on the image"), default=True)
-
-    # footerText = schema.TextLine(title=_(u"Footer"),
-    #                        description=_(u"Text below the portlet"),
-    #                        required=False,
-    #                        default=u"")
-
-    altText = schema.TextLine(title=_(u"ALT text"),
-                           description=_(u"A placeholder text for web browsers which cannot display images. This text is only needed if the portlet has only the image and no other texts."),
-                           required=False,
-                           default=u"")
 
     css = schema.TextLine(title=_(u"HTML styling"),
                           description=_(u"Extra CSS classes"),
@@ -118,20 +74,10 @@ class Assignment(base.Assignment):
     # Make sure default values work correctly migration proof manner
     text = FieldProperty(IImagePortlet["text"])
     headingText = FieldProperty(IImagePortlet["headingText"])
-    # footerText = FieldProperty(IImagePortlet["footerText"])
-    altText = FieldProperty(IImagePortlet["altText"])
 
     image = FieldProperty(IImagePortlet["image"])
     image2 = FieldProperty(IImagePortlet["image2"])
     link = FieldProperty(IImagePortlet["link"])
-
-    # link2 = FieldProperty(IImagePortlet["link2"])
-    # 
-    # image3 = FieldProperty(IImagePortlet["image3"])
-    # link3 = FieldProperty(IImagePortlet["link3"])
-    # 
-    # image4 = FieldProperty(IImagePortlet["image4"])
-    # link4 = FieldProperty(IImagePortlet["link4"])
 
     def __init__(self, **kwargs):
         self.__dict__.update(**kwargs)
@@ -149,7 +95,7 @@ class Assignment(base.Assignment):
         """
         Be smart as what show as the management interface title.
         """
-        entries = [self.text, self.altText, self.headingText, u"Image portlet"]
+        entries = [self.headingText, u"Image portlet"]
         for e in entries:
             if e:
                 return e
@@ -177,15 +123,6 @@ class Renderer(base.Renderer):
         # getattr -> migration safe
         if getattr(self.data, "image2", None):
             data.append(dict(image=self.data.image2, id="image2"))
-
-        # if getattr(self.data, "image3", None):
-        #     data.append(dict(image=self.data.image3, link=self.data.link3, id="image3"))
-        # 
-        # if getattr(self.data, "image4", None):
-        #     data.append(dict(image=self.data.image4, link=self.data.link4, id="image4"))
-
-        # Randomize the display order
-        # shuffle(data)
 
         return data
 
