@@ -16,7 +16,7 @@ from setuptools import setup
 
 long_desc = open("README.rst").read() + "\n" + open("CHANGES.txt").read()
 
-version = '1.2.7'
+version = '1.2.8'
 
 setup(name = "imageportlet",
     version = version,
