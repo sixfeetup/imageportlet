@@ -13,7 +13,12 @@
  /*global window,document*/
 
 (function($) { $(function() {
-    $(".imagePortlet").hover(
+    // check for touch device
+    if (!("ontouchstart" in document.documentElement)) {
+    document.documentElement.className += " no-touch";
+    }
+    // apply hover effect only to devices without touch
+    $(".no-touch .imagePortlet").hover(
         function() {
             $(this).find(".default").fadeOut();
             $(this).find(".hover").fadeIn();
