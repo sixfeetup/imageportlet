@@ -11,7 +11,7 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 from Acquisition import aq_inner
 from Products.CMFCore.utils import getToolByName
-from plone.app.form.widgets.wysiwygwidget import WYSIWYGWidget
+from plone.app import textfield
 from plone.portlets.interfaces import IPortletDataProvider
 from plone.app.portlets.portlets import base
 
@@ -39,10 +39,11 @@ class IImagePortlet(IPortletDataProvider):
             required=False,
         )
 
-    headingText = schema.Text(title=_(u"Heading"),
-                           description=_(u"Text on top of the default image"),
-                           required=False,
-                           default=u"")
+    headingText = textfield.RichText(
+        title=_(u"Heading"),
+        description=_(u"Text on top of the default image"),
+        required=False,
+        default=u"")
 
     image2 = NamedImage(
             title=_(u"Rollover Image"),
@@ -50,10 +51,11 @@ class IImagePortlet(IPortletDataProvider):
             required=False,
             default=None)
 
-    text = schema.Text(title=_(u"Rollover text"),
-                       description=_(u"Text displayed when hovering over the portlet"),
-                       required=False,
-                       default=u"")
+    text = textfield.RichText(
+        title=_(u"Rollover text"),
+        description=_(u"Text displayed when hovering over the portlet"),
+        required=False,
+        default=u"")
 
     link = schema.TextLine(title=_(u"Link"),
                            description=_(u"Absolute or site root relative link target"),
@@ -299,8 +301,6 @@ class Renderer(base.Renderer):
 class AddForm(z3cformhelper.AddForm):
 
     fields = field.Fields(IImagePortlet)
-    fields['headingText'].custom_widget = WYSIWYGWidget
-    fields['text'].custom_widget = WYSIWYGWidget
 
     def create(self, data):
         return Assignment(**data)
@@ -309,5 +309,3 @@ class AddForm(z3cformhelper.AddForm):
 class EditForm(z3cformhelper.EditForm):
 
     fields = field.Fields(IImagePortlet)
-    fields['headingText'].custom_widget = WYSIWYGWidget
-    fields['text'].custom_widget = WYSIWYGWidget
