@@ -1,6 +1,5 @@
 import logging
 import urllib
-from random import shuffle
 
 from DateTime import DateTime
 from zope.schema.fieldproperty import FieldProperty
